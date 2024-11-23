@@ -1,39 +1,36 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 
-// 可以设计循环使其可以旋 1 次，然后让其执行 n 次
+// 主要通过观察整数在内存中的字节排列来确定系统的字节序
 
-#include<string.h>  // 包含标准字符串处理库，以便使用 strlen函数计算字符串长度
-void leftRound(char arr[], int len, int time)
-{
-	int i = 0;
-	int j = 0;
+// 使用 union（联合体）来检查系统的字节序(即大端序或小端序)
+// 定义一个联合体 U，它包含两个成员：一个整数 a 和一个结构体 S
+// 联合体的特点是所有成员共享同一块内存空间
+union U {
+	int a;
 
-	// 取 time 和字符串长度 len 的模，以避免 time 大于 len 的情况
-	// 如：长度为 6 的情况下，旋转 7、13、19...次相当于 1 次，8、14、20...次相当于 2 次
-	time %= len;
+	// 定义一个名为 s 的结构体成员，包含 4 个 char 类型成员
+	struct S {
+		char c1;
+		char c2;
+		char c3;
+		char c4;
+	}s;
 
-	// 执行 time 次的单次平移
-	// 即循环 time 次，每次循环将字符串左旋 1 个字符
-	for (i = 0; i < time; i++)
-	{
-		char tmp = arr[0];
-		// 单次平移
-		for (j = 0; j < len - 1; j++)
-		{
-			arr[j] = arr[j + 1];
-		}
-		arr[j] = tmp;  // 也可以写成这样 arr[len - 1] = tmp;
+};
 
-	}
-}
 int main()
 {
-	char arr[] = "abcdef";
-	int time = 0;   // 表示左旋次数
-	scanf("%d", &time);
-	int len = strlen(arr);   // 使用 strlen函数计算字符串 arr 的长度
-	leftRound(arr, len, time);
-	printf("%s", arr);
+
+	union U u1 = { 0 };    // 初始化联合体 u1 的所有成员为 0
+	u1.a = 0x11223344;     // 给联合体的整数成员 a 赋值
+	printf("%x %x %x %x", u1.s.c1, u1.s.c2, u1.s.c3, u1.s.c4);  // 打印结构体成员的值
+
+	// 如果输出的值是: 11 22 33 44，那么系统是大端序
+	// 在大端序系统中，最高有效字节存储在最低的内存地址
+
+	// 如果输出的值是: 44 33 22 11，那么系统是小端序
+	// 在小端序系统中，最低有效字节存储在最低的内存地址
+
 	return 0;
 }
