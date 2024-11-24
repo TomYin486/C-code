@@ -1,36 +1,35 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 
-// 主要通过观察整数在内存中的字节排列来确定系统的字节序
+#include<string.h>
+void leftRound(char* src, int time)
+{
+	int len = strlen(src);  // 使用 strlen 函数计算传入字符串 src 的长度
 
-// 使用 union（联合体）来检查系统的字节序(即大端序或小端序)
-// 定义一个联合体 U，它包含两个成员：一个整数 a 和一个结构体 S
-// 联合体的特点是所有成员共享同一块内存空间
-union U {
-	int a;
+	// 计算 time 除以 len 的余数，得到实际需要旋转的次数 pos
+	// 因为旋转字符串长度的整数倍后，字符串不会发生变化
+	int pos = time % len;   // 断开位置的下标
 
-	// 定义一个名为 s 的结构体成员，包含 4 个 char 类型成员
-	struct S {
-		char c1;
-		char c2;
-		char c3;
-		char c4;
-	}s;
+	// 字符数组 tmp 用作临时存储旋转后的字符串
+	// 数组大小为 256，假设可以容纳任何旋转后的字符串
+	char tmp[256] = { 0 };  // 更准确的话可以选择 malloc len + 1 个字节的空间来做这个 tmp
 
-};
+	// 使用 strcpy 函数将 src 中从位置 pos 开始的子字符串复制到 tmp 中
+	strcpy(tmp, src + pos); // 先将后面的全部拷过来
+
+	// 使用 strncat 函数将 src 中从开始到位置 pos 的子字符串拼接到 tmp 的末尾
+	strncat(tmp, src, pos); // 然后将前面几个接上
+
+	// 使用 strcpy 函数将 tmp 中存储的旋转后的字符串复制回 src
+	strcpy(src, tmp);       // 最后拷回去
+}
 
 int main()
 {
-
-	union U u1 = { 0 };    // 初始化联合体 u1 的所有成员为 0
-	u1.a = 0x11223344;     // 给联合体的整数成员 a 赋值
-	printf("%x %x %x %x", u1.s.c1, u1.s.c2, u1.s.c3, u1.s.c4);  // 打印结构体成员的值
-
-	// 如果输出的值是: 11 22 33 44，那么系统是大端序
-	// 在大端序系统中，最高有效字节存储在最低的内存地址
-
-	// 如果输出的值是: 44 33 22 11，那么系统是小端序
-	// 在小端序系统中，最低有效字节存储在最低的内存地址
-
+	int time = 0;
+	char arr[] = "abcde";
+	scanf("%d", &time);
+	leftRound(arr, time);
+	printf("%s", arr);
 	return 0;
 }
