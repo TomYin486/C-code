@@ -1,35 +1,42 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
-
 #include<string.h>
-void leftRound(char* src, int time)
+
+// 函数 reverse_part，接受字符指针src（指向字符串的起始位置）、整数start（逆序开始的位置）和整数end（逆序结束的位置）
+// 将字符串从 start 到 end 这一段逆序
+void reverse_part(char* src, int start, int end)
 {
-	int len = strlen(src);  // 使用 strlen 函数计算传入字符串 src 的长度
+	int i = 0;
+	int j = 0;
 
-	// 计算 time 除以 len 的余数，得到实际需要旋转的次数 pos
-	// 因为旋转字符串长度的整数倍后，字符串不会发生变化
-	int pos = time % len;   // 断开位置的下标
+	for (i = start, j = end; i < j; i++, j--)
+	{
+		char tmp = src[i];
+		src[i] = src[j];
+		src[j] = tmp;
 
-	// 字符数组 tmp 用作临时存储旋转后的字符串
-	// 数组大小为 256，假设可以容纳任何旋转后的字符串
-	char tmp[256] = { 0 };  // 更准确的话可以选择 malloc len + 1 个字节的空间来做这个 tmp
+	}
 
-	// 使用 strcpy 函数将 src 中从位置 pos 开始的子字符串复制到 tmp 中
-	strcpy(tmp, src + pos); // 先将后面的全部拷过来
-
-	// 使用 strncat 函数将 src 中从开始到位置 pos 的子字符串拼接到 tmp 的末尾
-	strncat(tmp, src, pos); // 然后将前面几个接上
-
-	// 使用 strcpy 函数将 tmp 中存储的旋转后的字符串复制回 src
-	strcpy(src, tmp);       // 最后拷回去
 }
+
+// 例如：左旋 3 次字符串 ABCDEFG，结果为 DEFGABC
+// 先将要左旋的前 3 个字符串逆序（CBADEFG），然后将后半段也逆序（CBAGFED），最后整体逆序（DEFGABC）即可
+// 这样只需要做数值交换即可，可以写个上述函数来完成局部逆序
+
 
 int main()
 {
 	int time = 0;
-	char arr[] = "abcde";
+	char arr[] = "ABCD";
 	scanf("%d", &time);
-	leftRound(arr, time);
+
+	int len = strlen(arr);
+	int pos = time % len;
+
+	reverse_part(arr, 0, pos - 1);   //逆序前段,将字符串 arr 从下标 0 到 pos - 1 的子串逆序
+	reverse_part(arr, pos, len - 1); //逆序后段，将字符串 arr 从下标 pos 到 len - 1 的子串逆序
+	reverse_part(arr, 0, len - 1);   //整体逆序
 	printf("%s", arr);
+
 	return 0;
 }
