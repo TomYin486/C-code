@@ -1,48 +1,35 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 
-// 接受 3 个参数：整数数组 nums 的指针，数组的大小 numsSize，以及要查找的目标值 target
-int searchInsert(int* nums, int numsSize, int target)
+// 接受 3 个参数，整数数组 nums 的指针，数组的大小 numsSize，以及一个要移除的值 val
+int removeElement(int* nums, int numsSize, int val)
 {
-    // left 和 right，分是数组的起始位置和结束位置的下标
+    // 用作数组中不等于 val 的元素的下标
     int left = 0;
-    int right = numsSize - 1;
 
-    // 用于表示 target 应该插入的位置，如果 target 比数组中的所有元素都大，ans 将保持为 numsSize
-    int ans = numsSize;
-    while (left <= right)
+    // right 用于遍历数组中的每个元素
+    for (int right = 0; right < numsSize; right++)
     {
-        int mid = (right - left) / 2 + left;
-
-        // 如果 target 小于或等于中间下标处的值，更新 ans 为 mid，并调整 right 为 mid - 1
-        // 这样下一次循环只会在数组的左半部分查找
-        if (target <= nums[mid])
+        // 检查当前 right 下标处的元素是否不等于 val
+        if (nums[right] != val)
         {
-            ans = mid;
-            right = mid - 1;
-
-        }
-        // 如果 target 大于中间下标处的值，调整 left 为 mid + 1
-        // 这样下一次循环只会在数组的右半部分查找
-        else
-        {
-            left = mid + 1;
+            // 如果当前元素不等于 val，则将其复制到 left 下标处
+            // 这样可以让所有不等于 val 的元素都会被移动到数组的前部
+            nums[left] = nums[right];
+            left++;
         }
     }
-    // 表示 target 应该插入的位置
-    return ans;
+    // 返回 left 的值，即数组中不等于 val 的元素的数量
+    return left;
 }
-
 
 int main()
 {
-    int nums[] = { -1,0,1,2,3,4 };
-    int target = 0;
-    scanf("%d", &target);
-    int numsSize = sizeof(nums) / sizeof(nums[0]);   // 计算数组 nums 的大小
-    int ret = searchInsert(nums, numsSize, target);
-
-    // 打印目标值(target)在数组中的下标，或者它应该被插入的位置
+    int nums[] = { 1,2,3,4,5,6,7,8,9,10 };
+    int val = 0;
+    scanf("%d", &val);
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+    int ret = removeElement(nums, numsSize, val);
     printf("%d\n", ret);
 
     return 0;
