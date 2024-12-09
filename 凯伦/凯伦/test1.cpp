@@ -1,67 +1,44 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 
-#include <stdbool.h>
-#include <string.h>
-
-// haystack 和 needle 2 个参数都为个字符指针，分别指向要搜索的字符串和要查找的子串
-// 函数返回一个整数，表示子串在字符串中的位置
-int strStr(char* haystack, char* needle)
+int removeDuplicates(int* nums, int numsSize)
 {
-    // 计算 haystack 和 needle 字符串的长度
-    int n = strlen(haystack);
-    int m = strlen(needle);
-
-    // 如果 needle 的长度为 0(空字符串)，空字符串是任何字符串的子串，则函数返回 0
-    if (m == 0)
+    // 如果数组大小为 0，即数组为空，那么直接返回 0，因为没有元素可以处理
+    if (numsSize == 0)
     {
         return 0;
     }
-    // 如果 needle 的长度大于 haystack 的长度，不可能在 haystack 中找到比它本身还长的子串，则函数返回 -1
-    if (m > n)
-    {
-        return -1;
-    }
-    int i = 0;
 
-    // 标记当前检查的子串是否与 needle 匹配
-    bool flag = true;
-
-    // 从 haystack 的第 0 位置字符开始，每次加 1，直到 i + m (检查的位置加上 needle 的长度)不超过 haystack 的长度 n
-    for (i = 0; i + m <= n; i++)
+    // fast 指针用于遍历数组，slow 指针用于标记不重复元素的位置
+    int fast = 1;
+    int slow = 1;
+    while (fast < numsSize)
     {
-        // flag 重置为 true，进行新的匹配检查
-        flag = true;
-        // 逐个字符比较 haystack 中从位置 i 开始的子串与 needle
-        for (int j = 0; j < m; j++)
+        // 检查 fast 指针指向的当前元素是否与前一个元素不同。如果不同，说明当前元素是一个新的唯一元素
+        if (nums[fast] != nums[fast - 1])
         {
-            // 如果 haystack 中的当前字符与 needle 中的对应字符不匹配，将 flag 设置为 false 并跳出内层循环
-            if (haystack[i + j] != needle[j])
-            {
-                flag = false;
-                break;
-            }
+            // 前元素是唯一的，就将其复制到 slow 指针指向的位置，并将 slow 指针向前移动一位
+            nums[slow] = nums[fast];
+            slow++;
         }
-        // 如果 flag 仍然为 true，则找到了匹配的子串，函数返回当前的起始位置 i
-        if (flag)
-        {
-            return i;
-        }
+        fast++;
     }
-    // 如果循环结束后没有找到匹配的子串，函数返回 -1
-    return -1;
+    // slow 指针指向的位置就是最后 1 个唯一元素之后的位置，即数组中唯一元素的数量
+    return slow;
 }
 
 int main()
 {
-    char haystack1[] = "abc";
-    char needle1[] = "abcd";
-    int ret1 = strStr(haystack1, needle1);
-    printf("%d\n", ret1);
+    int nums[] = { 1,1,2,3,4,4,10 };
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+    int ret = removeDuplicates(nums, numsSize);
+    printf("%d\n", ret);
 
-    char haystack2[] = "ccabcd";
-    char needle2[] = "ab";
-    int ret2 = strStr(haystack2, needle2);
-    printf("%d\n", ret2);
+    // 检查，打印出数组 nums 的每个唯一元素
+    for (int i = 0; i < ret; i++)
+    {
+        printf("%d ", nums[i]);
+
+    }
     return 0;
 }
