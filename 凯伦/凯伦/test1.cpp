@@ -1,54 +1,52 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 
-#include<stdbool.h> // 包含标准布尔类型库，提供 bool 类型
-#include<string.h>  // 包含字符串处理库，提供 strlen 等函数
-#include<ctype.h>   // 包含字符类型处理库，提供 isdigit、isalpha、tolower 等函数
-
-bool isPalindrome(char* s)
+int waysToStep(int n)
 {
-	// 初始化左指针 left 为 0，指向字符串的开始位置
-	int left = 0;
+	// count 用于在循环中计数，从 3 开始，因为至少需要走 3 步才能开始计算
+	int count = 3;
 
-	// 初始化右指针 right 为字符串长度减 1，指向字符串的结束位置
-	int right = strlen(s) - 1;
+	// 存储到达每一级台阶的不同方式的数量
+	// arr[0]，arr[1]，arr[2] 分别表示到达前一阶、前两阶和前三阶台阶的不同方式的数量
+	int arr[4] = { 0 };
+	arr[0] = 1;
+	arr[1] = 2;
+	arr[2] = 4;
 
-	// 当左指针小于右指针时
-	while (left < right)
+	if (n <= 2)
 	{
-		// 左指针小于右指针，且当前字符既不是数字也不是字母，左指针向右移动
-		while (left < right && !(isdigit(s[left]) || isalpha(s[left])))
-		{
-			left++;
-		}
-
-		// 左指针小于右指针，且当前字符既不是数字也不是字母，右指针向左移动
-		while (left < right && !(isdigit(s[right]) || isalpha(s[right])))
-		{
-			right--;
-		}
-
-		// 将左右指针所指的字符都转换为小写后比较
-		if (tolower(s[left]) != tolower(s[right]))
-		{
-			// 如果不相等，返回 false，表示不是回文串
-			return false;
-		}
-
-		left++;
-		right--;
+		return n;
 	}
-	// 如果所有字符都检查完毕且没有不匹配的情况，返回 true，表示是回文串
-	return true;
+	else if (n == 3)
+	{
+		return 4;
+	}
+
+	// 直到 count 等于 n，即到达最后一阶台阶
+	while (count < n)
+	{
+		// 将到达前 3 个台阶的方式数量相加并取模，以避免结果过大
+		arr[3] = (arr[0] + arr[1]) % 1000000007 + arr[2];  // 计算到达第 count 阶的方式数量
+		arr[3] %= 1000000007;     // 取模以避免溢出
+
+		/// 将 arr[0], arr[1], arr[2] 的值向前移动
+		arr[0] = arr[1];
+		arr[1] = arr[2];
+		arr[2] = arr[3];
+
+		// 移动到下一阶
+		count++;
+	}
+	// 返回数组中最后 1 个元素的值，即到达第 n 阶台阶的不同方式的数量
+	return arr[3];
 }
 
 int main()
 {
-	char s1[] = "A man, a plan, a canal: Panama";
-	printf("%d\n", isPalindrome(s1));
-
-	char s2[] = "race a car";
-	printf("%d\n", isPalindrome(s2));
+	int n = 0;
+	scanf("%d", &n);
+	int ret = waysToStep(n);
+	printf("%d\n", ret);
 
 	return 0;
 }
