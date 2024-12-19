@@ -1,69 +1,35 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 
-// 将十进制数转换为 n 进制数
-void func1(int num, int base)
-{
-    // 假设数组足够大，可以存储转换后的数字
-    char result[100];
-    int index = 0;
-
-    // 如果数字为 0，直接返回
-    if (num == 0)
-    {
-        printf("0");
-        return;
-    }
-
-
-    while (num > 0)
-    {
-        // 取余数
-        int remainder = num % base;
-
-        if (remainder < 10)
-        {
-            // 转换为字符并存储
-            result[index++] = '0' + remainder;
-        }
-        else
-        {
-            // 使用大写字母表示 10 以上的数字
-            result[index++] = 'A' + remainder - 10;
-        }
-        // 更新 num 为 num/base 的整数部分
-        num /= base;
-    }
-
-    int i = 0;
-    // 结果是反向存储的，要反向打印
-    for (i = index - 1; i >= 0; i--)
-    {
-        printf("%c", result[i]);
-    }
-}
-
 int main()
 {
-    int i = 0;
-    int j = 0;
-    int n = 0;
-    scanf("%d", &n);
+	long long a = 0;
+	long long b = 0;
+	long long n = 0;
+	scanf("%lld %lld %lld", &a, &b, &n);
 
-    for (i = 1; i < n; i++)
-    {
-        for (j = 1; j <= i; j++)
-        {
-            int product = i * j;
-            func1(i, n);   // 输出第一个乘数
-            printf("*");
-            func1(j, n);   // 输出第二个乘数
-            printf("=");
-            func1(product, n); // 输出乘积
-            printf(" ");
-        }
-        printf("\n");
-    }
+	// 计算一周内做题的总数
+	long long s = 5 * a + 2 * b;
 
-    return 0;
+	// 计算在完成若干周的题目后，还剩下多少题目没有做
+	long long s1 = n % s;
+
+	// 使用整数除法 / 来得到完整的周数
+	long long s2 = n / s;
+
+	// 检查剩余的题目数 s1 是否能在一周的工作日内完成
+	if (s1 <= 5 * a)
+	{
+		// 如果剩余题目可以在工作日内完成，则打印完成题目所需的总天数
+		// s2 * 7 表示已经完成的周数对应的天数，(s1 + a - 1) / a 表示剩余题目需要的工作日天数
+		printf("%lld\n", s2 * 7 + (s1 + a - 1) / a);
+	}
+	// 处理剩余题目数超过工作日能完成的情况
+	else
+	{
+		// s2 * 7 + 5 表示已经完成的周数对应的天数加上 5 个工作日，(s1 - 5 * a + b - 1) / b 表示剩余题目需要的周末天数
+		printf("%lld\n", s2 * 7 + 5 + (s1 - 5 * a + b - 1) / b);
+	}
+
+	return 0;
 }
