@@ -1,71 +1,40 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include <stdlib.h>
 
-#define MAXN 100000   // 表示数组的最大大小
-#define MAXA 1000000  // 表示 a[i] 的最大值
-
-long long f[MAXN];    // 数组 f 用于存入斐波那契数列
-long long a[MAXN];    // 数组 a 用于存入输入的整数序列
-int bot[MAXA];        // 数组 bot 用于统计 a[i] / f[i] 的出现次数
+long long n = 0;    // n 表示 01 串的长度
+long long t = 0;    // t 表示变换的次数
+int x = 1;          // 用于计算循环周期
+char s[10005];      // 存储 01 串的字符数组
 
 int main()
 {
-    int n = 0;           // 表示输入的整数序列的长度
-    scanf("%d", &n);
+    scanf("%lld %lld", &n, &t);
+    scanf("%s", s);
 
-    long long az = -1;   // az 用于记录 a[i] 的最大值
+    // 计算 x 的最小值（这个值用于确定变换的周期），使得 x >= n
+    while (x < n)
+    {
+        // 通过左移操作找到大于或等于 n 的最小的 2 的幂次方值
+        x <<= 1;
+    }
+
+    // 减少不必要的重复计算
+    t = t % x;
+
+    // 进行 t 次操作
     int i = 0;
-    for (i = 1; i <= n; i++)
+    for (int i = 0; i < t; i++)
     {
-        scanf("%lld", &a[i]);
-        if (a[i] > az)
+        int j = 0;
+        // 对当前字符和前一个字符进行异或操作
+        for (j = n - 1; j >= 1; j--)
         {
-            az = a[i];  // 更新 az
+            // s[j] - '0' 表示将字符转换为数字（0 或 1）, + '0' 表示将结果转换回字符形式
+            s[j] = ((s[j] - '0') ^ (s[j - 1] - '0')) + '0';
         }
     }
 
-    // 初始化斐波那契数列
-    f[1] = f[2] = 1;
-    int m = 0;       // m 表示第一个 <= 1e6 的 f[i] 的位置
-    for (i = 3; i <= n; i++)
-    {
-        f[i] = f[i - 1] + f[i - 2]; // 计算斐波那契数列
-        if (f[i] > 1000000)
-        {
-            // 如果 f[i] 超过 1e6
-            m = i - 1;              // 记录 m 的位置
-            break;
-        }
-    }
-
-    // 如果 m 没有改变，说明 f[n] <= 1e6，直接赋值为 n
-    if (m == 0)
-    {
-        m = n;
-    }
-
-    // 统计 a[i] / f[i] 的出现次数
-    for (i = 1; i <= m; i++)
-    {
-        if (a[i] % f[i] == 0)
-        {
-            // 如果 a[i] 能被 f[i] 整除
-            bot[a[i] / f[i]]++;     // 统计 a[i] / f[i] 的出现次数
-        }
-    }
-
-    // 找到 bot 数组中的最大值
-    int maxc = -1;
-    for (i = 1; i <= az; i++)
-    {
-        if (bot[i] > maxc)
-        {
-            maxc = bot[i];   // 更新 maxc
-        }
-    }
-
-    printf("%d\n", n - maxc);
+    printf("%s\n", s);
 
     return 0;
 }
