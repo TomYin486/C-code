@@ -1,4 +1,24 @@
 ﻿  test1.cpp
-D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(17,12): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(18,12): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-  凯伦.vcxproj -> D:\code-GitHub\C-code\凯伦\x64\Debug\凯伦.exe
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(15,14): error C2131: 表达式的计算结果不是常数
+      D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(15,12):
+      因读取超过生命周期的变量而失败
+      D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(15,12):
+      请参见“n”的用法
+  
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(16,14): error C2131: 表达式的计算结果不是常数
+      D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(16,12):
+      因读取超过生命周期的变量而失败
+      D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(16,12):
+      请参见“m”的用法
+  
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(24,23): error C2131: 表达式的计算结果不是常数
+      D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(24,17):
+      因读取超过生命周期的变量而失败
+      D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(24,17):
+      请参见“n”的用法
+  
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(28,25): error C3863: 不可指定数组类型“char [n+m+1]”
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(31,25): error C3863: 不可指定数组类型“char [n+m+1]”
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(37,21): error C3863: 不可指定数组类型“char [n+m+1]”
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(40,21): error C3863: 不可指定数组类型“char [n+m+1]”
+D:\code-GitHub\C-code\凯伦\凯伦\test1.cpp(43,15): error C3863: 不可指定数组类型“char [n+m+1]”

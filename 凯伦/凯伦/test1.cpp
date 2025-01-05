@@ -1,71 +1,69 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))  // 用于返回两个数中的较小值
-
-char S[1005], T[1005];   // 用于表示输入字符串的字符数组
-int dp[1005][1005];
+// 比较函数，用于 qsort
+int compare(const void* a, const void* b)
+{
+	// 从小到大排序
+	return (*(char*)a - *(char*)b);
+}
 
 int main()
 {
-    scanf("%s %s", S, T);
-    int i = 0;
-    int j = 0;
+	int n = 0;
+	int m = 0;
+	scanf("%d %d", &n, &m);
 
-    // ls 和 lt 分别表示 S 和 T 的长度
-    int ls = strlen(S);
-    int lt = strlen(T);
+	char a[n + 1]; // 原始字符串
+	char b[m + 1]; // 待插入的字符
+	scanf("%s", a);
+	scanf("%s", b);
 
-    // 初始化 dp 数组
-    for (i = 0; i <= ls; i++)
-    {
-        for (j = 0; j <= lt; j++)
-        {
-            // 将 dp 数组初始化为一个很大的数（0x3f3f3f3f）
-            dp[i][j] = 0x3f3f3f3f;
-        }
-    }
+	// 对字符数组 b 进行从小到大的排序，确保在合并时能够优先插入较小的字符，从而得到字典序最小的结果
+	qsort(b, m, sizeof(char), compare);
 
-    // 当 T 为空字符串时，dp[i][0] 设置为0，因为不需要任何修改
-    for (i = 0; i <= ls; i++)
-    {
-        dp[i][0] = 0;
-    }
+	// 合并字符串 a 和字符数组 b(不包含 '\0')
+	char result[n + m + 1];
+	int i = 0;
+	int j = 0;
+	int k = 0;
+	while (i < n && j < m)
+	{
+		// 确保每次选择较小的字符放入结果中
+		if (a[i] <= b[j])
+		{
+			result[k] = a[i];
+			k++;
+			i++;
+		}
+		else
+		{
+			result[k] = b[j];
+			k++;
+			j++;
+		}
+	}
 
-    // 将字符串 S 和 T 的字符向后移动一位，并在开头添加一个空格
-    for (i = ls; i >= 1; i--)
-    {
-        S[i] = S[i - 1];
-    }
-    S[0] = ' ';
+	// 将剩余的字符添加到结果中
+	while (i < n)
+	{
+		result[k] = a[i];
+		k++;
+		i++;
+	}
+	while (j < m)
+	{
+		result[k] = b[j];
+		k++;
+		j++;
+	}
 
-    for (i = lt; i >= 1; i--)
-    {
-        T[i] = T[i - 1];
-    }
-    T[0] = ' ';
+	result[k] = '\0';  // 注意要添加字符串结束符'\0'
 
-    // 填充动态规划表
-    for (i = 1; i <= ls; i++)
-    {
-        for (j = 1; j <= lt; j++)
-        {
-            if (S[i] == T[j])
-            {
-                // 不需要修改 S[i]
-                dp[i][j] = dp[i - 1][j - 1];
-            }
-            else
-            {
-                // 可以选择修改 S[i] 为 T[j]，则 dp[i][j] = dp[i-1][j-1] + 1
-                // 或者选择不匹配 T[j]，则 dp[i][j] = dp[i - 1][j]
-                // 取这两种情况的最小值
-                dp[i][j] = MIN(dp[i][j], MIN(dp[i - 1][j], dp[i - 1][j - 1] + 1));
-            }
-        }
-    }
+	// 打印结果
+	printf("%s\n", result);
 
-    printf("%d\n", dp[ls][lt]);
-    return 0;
+	return 0;
 }
