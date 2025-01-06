@@ -1,69 +1,70 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-// 比较函数，用于 qsort
-int compare(const void* a, const void* b)
-{
-	// 从小到大排序
-	return (*(char*)a - *(char*)b);
-}
+#define MAX_SIZE 100005   // 表示数组的最大大小
 
 int main()
 {
-	int n = 0;
-	int m = 0;
-	scanf("%d %d", &n, &m);
+    // n，m 分别表示两个数组的长度
+    int n = 0;
+    int m = 0;
 
-	char a[n + 1]; // 原始字符串
-	char b[m + 1]; // 待插入的字符
-	scanf("%s", a);
-	scanf("%s", b);
+    // a，b 用于表示输入的两个数组
+    int a[MAX_SIZE];
+    int b[MAX_SIZE];
 
-	// 对字符数组 b 进行从小到大的排序，确保在合并时能够优先插入较小的字符，从而得到字典序最小的结果
-	qsort(b, m, sizeof(char), compare);
+    // front1，front2 用于表示两个数组的当前处理位置（队列的前端）
+    int front1 = 0;
+    int front2 = 0;
 
-	// 合并字符串 a 和字符数组 b(不包含 '\0')
-	char result[n + m + 1];
-	int i = 0;
-	int j = 0;
-	int k = 0;
-	while (i < n && j < m)
-	{
-		// 确保每次选择较小的字符放入结果中
-		if (a[i] <= b[j])
-		{
-			result[k] = a[i];
-			k++;
-			i++;
-		}
-		else
-		{
-			result[k] = b[j];
-			k++;
-			j++;
-		}
-	}
+    // rear1，rear2 用于表示两个数组的末尾位置（队列的后端）
+    int rear1;
+    int rear2;
 
-	// 将剩余的字符添加到结果中
-	while (i < n)
-	{
-		result[k] = a[i];
-		k++;
-		i++;
-	}
-	while (j < m)
-	{
-		result[k] = b[j];
-		k++;
-		j++;
-	}
+    // sum 表示合并操作的次数
+    long long sum = 0;
 
-	result[k] = '\0';  // 注意要添加字符串结束符'\0'
+    scanf("%d %d", &n, &m);
 
-	// 打印结果
-	printf("%s\n", result);
+    rear1 = n;    // 表示 a 数组的末尾位置
+    rear2 = m;    // 表示 b 数组的末尾位置
 
-	return 0;
+    int i = 0;
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &a[i]);
+    }
+    for (i = 0; i < m; i++)
+    {
+        scanf("%d", &b[i]);
+    }
+
+    // 通过合并操作使数组 a 和 b 变得完全相同
+    while (front1 < rear1 && front2 < rear2)
+    {
+        // 如果 a 和 b 当前处理的元素相等，则直接移动到下一个元素
+        if (a[front1] == b[front2])
+        {
+            front1++;
+            front2++;
+        }
+        // 如果 a 当前元素大于 b 当前元素，则将 b 当前元素与下一个元素合并，并增加合并次数
+        else if (a[front1] > b[front2])
+        {
+            a[front2 + 1] += b[front2];
+            front2++;
+            sum++;
+        }
+        // 如果 a 当前元素小于 b 当前元素，则将 a 当前元素与下一个元素合并，并增加合并次数
+        else
+        {
+            a[front1 + 1] += a[front1];
+            front1++;
+            sum++;
+        }
+    }
+
+    printf("%lld\n", sum);
+    return 0;
 }
