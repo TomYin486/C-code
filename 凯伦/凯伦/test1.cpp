@@ -1,29 +1,47 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include<stdlib.h>
 
-int missingNumber(int* nums, int numsSize)
+// 用于判断两个数大小的比较函数
+int compare(const void* p1, const void* p2)
 {
-    int x = 0;
+    // 转换为 int 类型并解引用
+    return *(int*)p1 - *(int*)p2;
+}
+
+void merge(int* nums1, int m, int* nums2, int n)
+{
     int i = 0;
-    // 计算 0 到 numsSize 的总和
-    // for (i = 0; i <= numsSize; i++) 
-    // {
-    //     x += i;
-    // }
-    x = numsSize * (numsSize + 1) / 2;    // 使用等差数列求和公式
-    for (i = 0; i < numsSize; i++)
+    int j = 0;
+
+    // 将 nums2 中的元素合并到 nums1 的末尾
+    for (i = m; i < m + n; i++)
     {
-        x -= nums[i];
+        nums1[i] = nums2[j];
+        j++;
     }
-    return x;
+    // 使用 qsort 对合并后的 nums1 进行排序
+    qsort(nums1, m + n, sizeof(int), compare);
+
 }
 
 int main()
 {
-    int nums[] = { 0,2,3,4,5,6 };
-    int numsSize = sizeof(nums) / sizeof(nums[0]);   // 计算数组的大小
-    int ret = missingNumber(nums, numsSize);
-    printf("%d\n", ret);
+    int nums1[] = { 2,3,4,5,0,0,0,0 };  // nums1 为目标数组，用于存储合并后的结果
+    int nums2[] = { 1,4,7,8 };     // 源数组，需要合并到 nums1 中
 
+    // m 为 nums1 所含有效数组元素，而不是数组的长度
+    int m = 4;
+
+    // n 为 nums2 中有效元素的个数
+    int n = sizeof(nums2) / sizeof(nums2[0]);
+
+    merge(nums1, m, nums2, n);
+
+    int i = 0;
+    for (i = 0; i < m + n; i++)
+    {
+        printf("%d ", nums1[i]);
+    }
     return 0;
 }
