@@ -1,27 +1,37 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include<stdlib.h>
-
-// 用于判断两个数大小的比较函数
-int compare(const void* p1, const void* p2)
-{
-    // 转换为 int 类型并解引用
-    return *(int*)p1 - *(int*)p2;
-}
 
 void merge(int* nums1, int m, int* nums2, int n)
 {
-    int i = 0;
-    int j = 0;
+    int l1 = m - 1;      // 表示 nums1 的最后一个有效元素
+    int l2 = n - 1;      // 表示 nums2 的最后一个有效元素
+    int l3 = m + n - 1;  // 表示 nums1 最后一个位置
 
-    // 将 nums2 中的元素合并到 nums1 的末尾
-    for (i = m; i < m + n; i++)
+    // 从后往前合并两个数组，确保较大的元素放在后面
+    // l1 >= 0 且 l2 >= 0，表示 nums1 和 nums2 都还有未处理的元素
+    while (l1 >= 0 && l2 >= 0)
     {
-        nums1[i] = nums2[j];
-        j++;
+        if (nums1[l1] > nums2[l2])
+        {
+            nums1[l3] = nums1[l1];
+            l3--;
+            l1--;
+        }
+        else
+        {
+            nums1[l3] = nums2[l2];
+            l3--;
+            l2--;
+        }
+
     }
-    // 使用 qsort 对合并后的 nums1 进行排序
-    qsort(nums1, m + n, sizeof(int), compare);
+    // 循环结束，表示 l1 < 0 或 l2 < 0，如果 nums2 还有剩余元素，直接合并到 nums1 中
+    while (l2 >= 0)
+    {
+        nums1[l3] = nums2[l2];
+        l3--;
+        l2--;
+    }
 
 }
 
