@@ -1,48 +1,109 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
 
-// 使用 ^ 可防止数据太大而溢出（如计算 (n+1) * n / 2）
-// 异或操作的特点: 
-// 1.任何数和 0 异或，结果仍然是原来的数
-// 2.任何数和自身异或，结果是 0
-// 3.异或操作满足交换律和结合律
+// 单链表
+struct ListNode {
+    int val;
+    struct ListNode* next;
+};
 
-int missingNumber(int* nums, int numsSize)
+typedef struct ListNode ListNode;
+
+// 定义新链表，遍历原链表找不为 val 的节点，尾插在新链表中
+struct ListNode* removeElements(struct ListNode* head, int val)
 {
-	int x = 0;       // x 用于表示异或结果
-	int n = numsSize;
-	int i = 0;
+    ListNode* newHead = NULL;
+    ListNode* newTail = NULL;
 
-	// 对 0 到 n 的所有整数进行异或操作，得到一个中间结果。这个结果相当于 0 到 n 的所有整数的异或和
-	for (i = 0; i <= n; i++)
-	{
-		x ^= i;
-	}
+    ListNode* pcur = head;
 
-	// 对数组中的每个元素进行异或操作
-	// 由于数组中的元素是 0 到 n 中缺失一个整数的集合，异或操作会将重复的数抵消掉，最终剩下的就是缺失的整数
-	for (i = 0; i < numsSize; i++)
-	{
-		x ^= nums[i];
-	}
-	return x;
+    while (pcur != NULL)
+    {
+        // 不是 val，尾插到新链表
+        if (pcur->val != val)
+        {
+            // 链表为空：插入进来的节点就是链表的头节点和尾节点
+            if (newHead == NULL)
+            {
+                newHead = newTail = pcur;
+            }
+            // 链表不为空：插入进来的节点就是链表的新的尾节点
+            else
+            {
+                // 让 newTail 变为新的尾节点
+                newTail->next = pcur;
+                newTail = newTail->next;
+            }
+        }
+        pcur = pcur->next;
+    }
+    // 确保新链表的最后一个节点正确终止
+    if (newTail != NULL)
+    {
+        newTail->next = NULL;
+    }
+    // 返回新链表的头节点
+    return newHead;
+}
 
-	// 也可以简化
-	/*int x = 0;
-	for (int i = 0; i < numsSize; i++)
-	{
-		x ^= nums[i];
-		x ^= i;
-	}
-	x ^= numsSize;
-	return x;*/
+// 打印链表
+void printList(ListNode* head)
+{
+    ListNode* pcur = head;
+    while (pcur != NULL)
+    {
+        printf("%d->", pcur->val);
+        pcur = pcur->next;
+    }
+    printf("NULL\n");
+}
+
+// 释放链表内存
+void freeList(ListNode* head)
+{
+    ListNode* pcur = head;
+    while (pcur != NULL)
+    {
+        ListNode* next = pcur->next;
+        free(pcur);
+        pcur = next;
+    }
 }
 
 int main()
 {
-	int nums[] = { 9, 6, 4, 2, 3, 5, 7, 0, 1 };
-	int numsSize = sizeof(nums) / sizeof(nums[0]);   // 计算数组的大小
-	int ret = missingNumber(nums, numsSize);
-	printf("%d\n", ret);
-	return 0;
+    // 创建链表 [1, 2, 3]
+    ListNode* s1 = (ListNode*)malloc(sizeof(ListNode));
+    s1->val = 1;
+
+    ListNode* s2 = (ListNode*)malloc(sizeof(ListNode));
+    s2->val = 2;
+
+    ListNode* s3 = (ListNode*)malloc(sizeof(ListNode));
+    s3->val = 3;
+
+    s1->next = s2;
+    s2->next = s3;
+    s3->next = NULL;
+
+    // 打印原始链表
+    printf("Original list: ");
+    printList(s1);
+
+    int val = 2;
+
+    ListNode* newHead = removeElements(s1, val);
+
+    // 打印处理后的链表
+    printf("List after removing %d: ", val);
+    printList(newHead);
+
+    // 释放新链表的内存
+    freeList(newHead);
+
+    // 注意：不要释放原始链表的节点，因为它们可能已经被新链表使用
+    // 不能这么写 freeList(s1); 
+
+    return 0;
 }
